@@ -17,6 +17,10 @@ MIT
 
 To consume this library, you must execute npm or ng
 
+```js
+    import { WebmonetizationLibService } from "webmonetizationhelper";
+```
+
 
 ## Initializing
 
