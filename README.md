@@ -1,27 +1,189 @@
-# WebmonetizationLib
+# WebMonetization Angular Helper
+Angular Helper for implementing WebMonetization Specification (https://webmonetization.org/)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.1.4.
+## License
+----
+MIT
 
-## Development server
+## Contributors
+----
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+- [Néstor Nicolás Campos Rojas](https://www.linkedin.com/in/nescampos/)
+- [Techgethr SpA](https://techgethr.com/)
+- [Coil](https://coil.com/)
+- [WebMonetization](https://webmonetization.org/)
 
-## Code scaffolding
+## Use the library
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+To consume this library, you must execute npm or ng
 
-## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+## Initializing
 
-## Running unit tests
+First, you must call the "initialize" method with DOM (document from page):
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+**This example uses jsdom library for getting DOM**
 
-## Running end-to-end tests
+```js
+    
+    webMon.initialize(documento);
+```
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
-## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Checking availability
+
+### Checking if WebMonetization is enabled in web browser and its status
+
+For checking if enabled, *isBrowserEnabled()* function returns a boolean value (true if enabled, false if not):
+
+```js
+    var enabled = webMon.isBrowserEnabled();
+```
+
+For checking status, *getMonetizationState()* function returns a string value with status. It returns **"Not enabled in this browser"** if browser is not enabled:
+
+```js
+    var statusText = webMon.getMonetizationState();
+```
+
+## Starting
+
+For starting WebMonetization Generic Helper, you can register HTML classes for your exclusive content for WebMonetization users.
+For example, here is a HTML content:
+
+```html
+    <div class="exclusive hidden"> Here is an exclusive text WebMonetization users. Hidden for other users.</div>
+```
+
+### Register exclusive content (this step is optional)
+
+For registering, you must use the *registerMonetizedContent()* method. This function accepts 2 parameters, "classContent" is the class name for exclusive and "classHidden" is the class name for hidden content when you start and stop WebMonetization. 
+
+```js
+    var classContent = "exclusive";
+    var classHidden = "hidden";
+    webMon.registerMonetizedContent(classContent, classHidden);
+```
+
+### Start
+
+For starting, you must use the *start()* method. This method creates the meta tag for monetization with the wallet's payment pointer specified as parameter. Also, you can specify a callback method after starting is done.
+
+```js
+    export.printConsole = function() {
+        console.log("WebMonetization is started");
+    }
+
+    var pointer = "$wallet.example.com/alice";
+    webMon.start(pointer, printConsole);
+```
+
+**You are ready, your website is already monetizing the content.**
+
+## Checking states
+
+When you need to check states, in addition to the *getMonetizationState()* function, you can use the following available functions:
+
+- *isPendingState()*: For checking if WebMonetization is in pending state. Returns a boolean value.
+- *isStartedState()*: For checking if WebMonetization is in started state. Returns a boolean value.
+- *isStoppedState()*: For checking if WebMonetization is in stopped state. Returns a boolean value.
+- *isUndefinedState()*: For checking if WebMonetization is in undefined state (when WebMonetization is not enabled in the web browser). Returns a boolean value.
+
+
+For example:
+
+```js
+    var isStopped = webMon.isStoppedState();
+    if(isStopped) {
+        console.log("WebMonetization is stopped and can not be used.");
+    }
+```
+
+## Register new values
+
+### Change pointer 
+
+Sometimes you will need to change the pointer (wallet's payment pointer for content). To do this, you can use the *changePointer* method.
+This method receive 1 required and 2 optional parameters.
+- pointer: This required parameter specifies the new pointer address for monetization.
+- createIfNotExist: This optional parameter (false by default) specifies if meta tag for monetization must be created if not exists (call to *start()* method).
+- callbackFunction: This optional parameter, you can use for calling another function after change the pointer.
+
+```js
+    var newpointer = "$wallet.example.com/nestor";
+    webMon.changePointer(newpointer,false);
+```
+
+### Listeners
+
+Sometimes you need to register functions to listen for certain events when using WebMonetization. To do this, you can use:
+
+- *registerStartListener(listenerFunction)*: It executes when WebMonetization is in started state.
+- *registerProgressListener(listenerFunction)*: It executes when WebMonetization is in progress state.
+- *registerStopListener(listenerFunction)*: It executes when WebMonetization is in stopped state.
+- *registerPendingListener(listenerFunction)*: It executes when WebMonetization is in pending state.
+- *executeOnUndefined(listenerFunction)*: It executes when WebMonetization is undefined in the web browser.
+
+**listenerFunction**: It is the function for executing.
+
+For example:
+```js
+    export.printPendingState = function() {
+        console.log("WebMonetization is in pending state.");
+    }
+    webMon.registerPendingListener(printPendingState);
+```
+
+### iFrames
+
+If you have iFrames in your page, and you need to enable and disable WebMonetization for those contents, you can use these methods:
+
+- *enableMonetizationOniFrame(iframeId)*: With this method, you can enable WebMonetization for an iFrame with the specified Id as parameter.
+
+```js
+    var iFrameId = "myfirstIFrame";
+    webMon.enableMonetizationOniFrame(iFrameId);
+```
+
+- *disableMonetizationOniFrame(iframeId)*: With this method, you can disable WebMonetization for an iFrame with the specified Id as parameter.
+
+```js
+    var iFrameId = "myfirstIFrame";
+    webMon.disableMonetizationOniFrame(iFrameId);
+```
+
+**Pages inside the iFrames must have "monetization" meta tag for using WebMonetization**
+
+
+## Get values
+
+If you need to get some values, you can use the next methods:
+
+- *getTotalAmountFromCurrentUser()*: Obtains the amount obtained so far by the user who consumes the monetized content.
+- *getScaleFromCurrentUser()*: Obtains the scale for the amount value (this value, multiplied for the amount, you get the real amount received). For Example: 0.01
+- *getAssetCodeFromCurrentUser()*: Obtains the asset code for user's payments. For example, USD.
+- *getCurrentPointer()*: Obtains the current wallet pointer for payments.
+
+For example:
+
+```js
+    var totalAmount = webMon.getTotalAmountFromCurrentUser();
+    console.log("The total amount is "+totalAmount);
+```
+
+### Getting new document
+
+For getting the new document variable (DOM), you must call *getDocument()* funcion.
+For example:
+```js
+    var document = webMon.getDocument();
+```
+
+## Stopping
+
+For stopping WebMonetization in your page and payments from your users, you must use the *stop()* method. This method has an optional parameters, "callbackFunction" with a function for executing when the process is stopped.
+
+```js
+    webMon.stop();
+```
