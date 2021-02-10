@@ -139,23 +139,6 @@ For example:
     webMon.registerPendingListener(printPendingState);
 ```
 
-### iFrames
-
-If you have iFrames in your page, and you need to enable and disable WebMonetization for those contents, you can use these methods:
-
-- *enableMonetizationOniFrame(iframeId)*: With this method, you can enable WebMonetization for an iFrame with the specified Id as parameter.
-
-```js
-    var iFrameId = "myfirstIFrame";
-    webMon.enableMonetizationOniFrame(iFrameId);
-```
-
-- *disableMonetizationOniFrame(iframeId)*: With this method, you can disable WebMonetization for an iFrame with the specified Id as parameter.
-
-```js
-    var iFrameId = "myfirstIFrame";
-    webMon.disableMonetizationOniFrame(iFrameId);
-```
 
 **Pages inside the iFrames must have "monetization" meta tag for using WebMonetization**
 
